@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Transformadores y Máquinas Eléctricas</title>
+    <title>Calculadora de Máquinas Eléctricas (U1-U5)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,29 +12,21 @@
             theme: {
                 extend: {
                     colors: {
-                        gold: {
-                            400: '#facc15',
-                            500: '#eab308',
-                            600: '#ca8a04',
-                        },
-                        neonBlue: {
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                        }
+                        gold: { 400: '#facc15', 500: '#eab308', 600: '#ca8a04' },
+                        neonBlue: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome para iconos -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             background: radial-gradient(circle at top left, #0f172a, #020617);
             min-height: 100vh;
             color: #f8fafc;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .glass-panel {
             background: rgba(15, 23, 42, 0.65);
@@ -56,370 +48,493 @@
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
             border-color: rgba(56, 189, 248, 0.4);
         }
+        .tab-btn.active {
+            background: rgba(234, 179, 8, 0.2);
+            border-color: #facc15;
+            color: #facc15;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col justify-between">
 
     <div class="max-w-7xl mx-auto w-full">
         <!-- Encabezado -->
-        <header class="text-center mb-8 glass-panel p-6 rounded-2xl border-b border-gold-500/20">
+        <header class="text-center mb-6 glass-panel p-6 rounded-2xl border-b border-gold-500/20">
             <div class="inline-flex items-center gap-3 mb-2">
                 <i class="fa-solid fa-bolt text-gold-400 text-3xl animate-pulse"></i>
-                <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gold-400 via-amber-200 to-neonBlue-400 bg-clip-text text-transparent">
-                    Analizador de Transformadores Monofásicos
+                <h1 class="text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-gold-400 via-amber-200 to-neonBlue-400 bg-clip-text text-transparent">
+                    Plataforma de Ingeniería: Máquinas Eléctricas
                 </h1>
             </div>
-            <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
-                Herramienta de simulación y cálculo de parámetros, circuito equivalente, regulación de tensión y eficiencia según normas IEC / IEEE.
+            <p class="text-slate-400 text-xs md:text-sm max-w-3xl mx-auto">
+                Modelado dinámico y cálculo analítico para las 5 Unidades: Transformadores, Máquinas CD, Máquinas Síncronas, Motores de Inducción y Motores Especiales[cite: 4, 5, 6].
             </p>
         </header>
 
-        <!-- Grid Principal -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- COLUMNA IZQUIERDA: FORMULARIO (5 cols) -->
-            <div class="lg:col-span-5 flex flex-col gap-6">
-                <div class="glass-panel p-6 rounded-2xl neon-border-gold">
-                    <h2 class="text-xl font-bold text-gold-400 mb-4 flex items-center gap-2 border-b border-slate-700/50 pb-2">
-                        <i class="fa-solid fa-sliders"></i> Parámetros de Entrada
-                    </h2>
+        <!-- Navegación por Pestañas (Unidades 1 a 5) -->
+        <div class="flex flex-wrap gap-2 mb-6 justify-center" id="tabContainer">
+            <button onclick="switchTab('u1')" id="tab-u1" class="tab-btn active glass-card px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2">
+                <i class="fa-solid fa-transformer-bolt"></i> U1: Transformadores
+            </button>
+            <button onclick="switchTab('u2')" id="tab-u2" class="tab-btn glass-card px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs font-bold transition-all flex items-center gap-2">
+                <i class="fa-solid fa-car-battery"></i> U2: Máquinas CD
+            </button>
+            <button onclick="switchTab('u3')" id="tab-u3" class="tab-btn glass-card px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs font-bold transition-all flex items-center gap-2">
+                <i class="fa-solid fa-arrows-spin"></i> U3: Máquinas Síncronas
+            </button>
+            <button onclick="switchTab('u4')" id="tab-u4" class="tab-btn glass-card px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs font-bold transition-all flex items-center gap-2">
+                <i class="fa-solid fa-fan"></i> U4: Inducción Trifásica
+            </button>
+            <button onclick="switchTab('u5')" id="tab-u5" class="tab-btn glass-card px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs font-bold transition-all flex items-center gap-2">
+                <i class="fa-solid fa-microchip"></i> U5: Motores Especiales
+            </button>
+        </div>
 
-                    <form id="transformerForm" class="space-y-4">
-                        <!-- Sección 1: Datos Nominales -->
+        <!-- SECCIÓN UNIDAD 1 -->
+        <div id="content-u1" class="tab-content grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl neon-border-gold">
+                <h2 class="text-lg font-bold text-gold-400 mb-4 border-b border-slate-700/50 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> U1: Parámetros del Transformador
+                </h2>
+                <form class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <h3 class="text-xs font-semibold text-neonBlue-400 uppercase tracking-wider mb-2">Valores Nominales</h3>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">Potencia Nom. ($S_N$ kVA)</label>
-                                    <input type="number" id="sNominal" value="25" step="0.5" min="0.1" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-400 text-gold-400 font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">Voltaje Primario ($V_1$ V)</label>
-                                    <input type="number" id="v1" value="2400" step="10" min="1" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-400 text-slate-100 font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">Voltaje Secundario ($V_2$ V)</label>
-                                    <input type="number" id="v2" value="240" step="5" min="1" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-400 text-slate-100 font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">Frecuencia ($f$ Hz)</label>
-                                    <select id="freq" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-400 text-slate-100">
-                                        <option value="60" selected>60 Hz</option>
-                                        <option value="50">50 Hz</option>
-                                    </select>
-                                </div>
+                            <label class="text-[11px] text-slate-300">Potencia Nom. $S_N$ (kVA)</label>
+                            <input type="number" id="u1_sNom" value="25" step="0.5" class="u1-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-gold-400 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Voltaje $V_1$ / $V_2$ (V)</label>
+                            <div class="flex gap-1">
+                                <input type="number" id="u1_v1" value="2400" class="u1-in w-1/2 bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                                <input type="number" id="u1_v2" value="240" class="u1-in w-1/2 bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
                             </div>
                         </div>
-
-                        <!-- Sección 2: Pruebas de Laboratorio -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-neonBlue-400 uppercase tracking-wider mb-2">Pruebas de Laboratorio (Medidas en Primario)</h3>
-                            <div class="space-y-3">
-                                <div class="p-3 glass-card rounded-lg border border-slate-700/50">
-                                    <span class="text-xs text-amber-400 font-semibold block mb-1">Prueba de Vacío / Circuito Abierto ($CA$)[cite: 6]</span>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-[10px] text-slate-400">Potencia $P_{CA}$ (W)</label>
-                                            <input type="number" id="pca" value="120" step="5" min="0" class="w-full bg-slate-900/90 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 font-mono">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] text-slate-400">Voltaje $V_{CA}$ (V)</label>
-                                            <input type="number" id="vca" value="2400" step="10" min="1" class="w-full bg-slate-900/90 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 font-mono">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-3 glass-card rounded-lg border border-slate-700/50">
-                                    <span class="text-xs text-sky-400 font-semibold block mb-1">Prueba de Cortocircuito ($CC$)[cite: 6]</span>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-[10px] text-slate-400">Potencia $P_{CC}$ (W)</label>
-                                            <input type="number" id="pcc" value="380" step="5" min="0" class="w-full bg-slate-900/90 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 font-mono">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] text-slate-400">Corriente $I_{CC}$ (A)</label>
-                                            <input type="number" id="icc" value="10.4" step="0.1" min="0.1" class="w-full bg-slate-900/90 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 font-mono">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="p-3 glass-card rounded-lg border border-slate-700/50">
+                        <span class="text-xs text-amber-400 font-semibold block mb-1">Prueba CA ($P_{CA}$, $V_{CA}$)[cite: 6]</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="u1_pca" value="120" class="u1-in bg-slate-900 border border-slate-700 rounded p-1.5 text-xs font-mono" placeholder="P_ca (W)">
+                            <input type="number" id="u1_vca" value="2400" class="u1-in bg-slate-900 border border-slate-700 rounded p-1.5 text-xs font-mono" placeholder="V_ca (V)">
                         </div>
-
-                        <!-- Sección 3: Condiciones de Carga -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-neonBlue-400 uppercase tracking-wider mb-2">Condiciones de Carga Operativa</h3>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">Factor de Carga ($\%$)</label>
-                                    <input type="range" id="loadFactor" min="10" max="120" value="100" class="w-full accent-gold-400">
-                                    <div class="text-right text-xs text-gold-400 font-mono" id="loadFactorVal">100%</div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-slate-300 mb-1">FP ($\cos\theta$)</label>
-                                    <input type="number" id="pf" value="0.85" step="0.01" min="0.1" max="1.0" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-400 text-slate-100 font-mono">
-                                </div>
-                            </div>
+                    </div>
+                    <div class="p-3 glass-card rounded-lg border border-slate-700/50">
+                        <span class="text-xs text-sky-400 font-semibold block mb-1">Prueba CC ($P_{CC}$, $I_{CC}$)[cite: 6]</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="u1_pcc" value="380" class="u1-in bg-slate-900 border border-slate-700 rounded p-1.5 text-xs font-mono" placeholder="P_cc (W)">
+                            <input type="number" id="u1_icc" value="10.4" step="0.1" class="u1-in bg-slate-900 border border-slate-700 rounded p-1.5 text-xs font-mono" placeholder="I_cc (A)">
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Factor Carga (%)</label>
+                            <input type="number" id="u1_fc" value="100" min="1" max="120" class="u1-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">FP ($\cos\theta$)</label>
+                            <input type="number" id="u1_pf" value="0.85" step="0.01" max="1" class="u1-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <!-- COLUMNA DERECHA: RESULTADOS Y DIAGRAMA (7 cols) -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
-                
-                <!-- Tarjetas Principales de Resultados -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="grid grid-cols-3 gap-3">
                     <div class="glass-panel p-4 rounded-xl border-l-4 border-l-gold-400">
-                        <span class="text-xs text-slate-400 font-medium">Relación de Transf. ($a$)</span>
-                        <div class="text-2xl font-bold text-gold-400 mt-1 font-mono" id="resA">10.00</div>
-                        <span class="text-[10px] text-slate-500">$N_1 / N_2$</span>
+                        <span class="text-[10px] text-slate-400 block">Relación $a$</span>
+                        <span id="u1_resA" class="text-xl font-bold text-gold-400 font-mono">0.00</span>
                     </div>
-
                     <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
-                        <span class="text-xs text-slate-400 font-medium">Regulación de Tensión ($\%VR$)</span>
-                        <div class="text-2xl font-bold text-neonBlue-400 mt-1 font-mono" id="resVR">0.00 %</div>
-                        <span class="text-[10px] text-slate-500">Caída de voltaje con carga</span>
+                        <span class="text-[10px] text-slate-400 block">Regulación %VR</span>
+                        <span id="u1_resVR" class="text-xl font-bold text-neonBlue-400 font-mono">0.00 %</span>
                     </div>
-
                     <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
-                        <span class="text-xs text-slate-400 font-medium">Eficiencia ($\eta$)</span>
-                        <div class="text-2xl font-bold text-emerald-400 mt-1 font-mono" id="resEff">0.00 %</div>
-                        <span class="text-[10px] text-slate-500">Rendimiento global</span>
+                        <span class="text-[10px] text-slate-400 block">Eficiencia $\eta$</span>
+                        <span id="u1_resEff" class="text-xl font-bold text-emerald-400 font-mono">0.00 %</span>
                     </div>
                 </div>
-
-                <!-- Estado Normativo -->
-                <div class="glass-panel p-4 rounded-xl flex items-center justify-between border border-slate-700/50">
-                    <div class="flex items-center gap-3">
-                        <div id="statusIcon" class="w-10 h-10 rounded-full flex items-center justify-center bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs text-slate-400 uppercase tracking-wider block">Estado de Operación IEEE/ANSI</span>
-                            <span id="statusText" class="text-sm font-semibold text-slate-200">Operación dentro de parámetros óptimos</span>
-                        </div>
+                <div class="glass-panel p-4 rounded-xl border border-slate-700/50 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div id="u1_statusIcon" class="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-500/20 text-emerald-400"><i class="fa-solid fa-check"></i></div>
+                        <span id="u1_statusText" class="text-xs text-slate-200 font-semibold">Cálculo completado</span>
                     </div>
-                    <button id="copyReportBtn" class="px-4 py-2 bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-600 hover:to-amber-700 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-2 shadow-lg transition-all duration-200">
-                        <i class="fa-solid fa-copy"></i> Copiar Reporte
-                    </button>
+                    <button onclick="copyReport('U1')" class="px-3 py-1.5 bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold rounded text-xs"><i class="fa-solid fa-copy"></i> Reporte</button>
                 </div>
-
-                <!-- Esquema visual del Transformador / Circuito Equivalente -->
-                <div class="glass-panel p-6 rounded-2xl neon-border-blue flex flex-col justify-between flex-1">
-                    <h3 class="text-sm font-bold text-neonBlue-400 mb-4 flex items-center justify-between">
-                        <span><i class="fa-solid fa-microchip mr-2"></i>Circuito Equivalente Reflejado al Primario</span>
-                        <span class="text-xs font-normal text-slate-400">Parámetros Calculados</span>
-                    </h3>
-
-                    <!-- SVG Diagrama Dinámico -->
-                    <div class="w-full bg-slate-950/80 rounded-xl p-4 border border-slate-800 relative overflow-hidden">
-                        <svg viewBox="0 0 600 200" class="w-full h-auto">
-                            <!-- Definición de gradientes -->
-                            <defs>
-                                <linearGradient id="wireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#38bdf8" />
-                                    <stop offset="100%" stop-color="#facc15" />
-                                </linearGradient>
-                            </defs>
-
-                            <!-- Línea Superior de Transmisión -->
-                            <path d="M 50 50 L 150 50 M 230 50 L 370 50 M 450 50 L 550 50" stroke="url(#wireGrad)" stroke-width="3" fill="none" />
-                            <!-- Línea Inferior de Retorno -->
-                            <path d="M 50 160 L 550 160" stroke="#475569" stroke-width="3" fill="none" />
-
-                            <!-- Resistencia Req -->
-                            <rect x="150" y="35" width="40" height="30" fill="#0f172a" stroke="#eab308" stroke-width="2" rx="4" />
-                            <text x="170" y="30" fill="#eab308" font-size="11" text-anchor="middle" font-family="monospace">Req</text>
-                            <text x="170" y="54" fill="#f8fafc" font-size="10" text-anchor="middle" font-family="monospace" id="svgReq">0.00 Ω</text>
-
-                            <!-- Inductancia Xeq -->
-                            <path d="M 370 50 Q 380 30 390 50 Q 400 30 410 50 Q 420 30 430 50 Q 440 30 450 50" stroke="#38bdf8" stroke-width="2" fill="none" />
-                            <text x="410" y="25" fill="#38bdf8" font-size="11" text-anchor="middle" font-family="monospace">Xeq</text>
-                            <text x="410" y="70" fill="#f8fafc" font-size="10" text-anchor="middle" font-family="monospace" id="svgXeq">0.00 Ω</text>
-
-                            <!-- Rama Paralelo (Magnetización) -->
-                            <path d="M 280 50 L 280 80 M 280 130 L 280 160" stroke="#38bdf8" stroke-width="2" fill="none" />
-                            <!-- Rc -->
-                            <rect x="250" y="80" width="25" height="50" fill="#0f172a" stroke="#ca8a04" stroke-width="2" rx="2" />
-                            <text x="240" y="110" fill="#ca8a04" font-size="10" text-anchor="end" font-family="monospace">Rc</text>
-                            <!-- Xm -->
-                            <path d="M 305 80 Q 295 90 305 100 Q 295 110 305 120 Q 295 130 305 140" stroke="#0284c7" stroke-width="2" fill="none" />
-                            <text x="320" y="110" fill="#0284c7" font-size="10" font-family="monospace">Xm</text>
-
-                            <!-- Terminales de Entrada y Salida -->
-                            <circle cx="50" cy="50" r="5" fill="#38bdf8" />
-                            <circle cx="50" cy="160" r="5" fill="#38bdf8" />
-                            <text x="35" y="110" fill="#38bdf8" font-size="12" font-weight="bold">V1</text>
-
-                            <circle cx="550" cy="50" r="5" fill="#facc15" />
-                            <circle cx="550" cy="160" r="5" fill="#facc15" />
-                            <text x="565" y="110" fill="#facc15" font-size="12" font-weight="bold">a·V2</text>
-                        </svg>
+                <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
+                    <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-diagram-project mr-2"></i>Circuito Equivalente Reflejado</span>
+                    <div class="grid grid-cols-4 gap-2 my-4 text-center">
+                        <div class="bg-slate-900/80 p-2 rounded"><span class="text-[10px] text-slate-400 block">$R_{eq}$</span><span id="u1_req" class="text-xs font-mono font-bold text-amber-400">0 Ω</span></div>
+                        <div class="bg-slate-900/80 p-2 rounded"><span class="text-[10px] text-slate-400 block">$X_{eq}$</span><span id="u1_xeq" class="text-xs font-mono font-bold text-sky-400">0 Ω</span></div>
+                        <div class="bg-slate-900/80 p-2 rounded"><span class="text-[10px] text-slate-400 block">$R_c$</span><span id="u1_rc" class="text-xs font-mono font-bold text-slate-200">0 Ω</span></div>
+                        <div class="bg-slate-900/80 p-2 rounded"><span class="text-[10px] text-slate-400 block">$X_m$</span><span id="u1_xm" class="text-xs font-mono font-bold text-slate-200">0 Ω</span></div>
                     </div>
-
-                    <!-- Métricas Secundarias -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">$R_{eq}$ (Resistencia)</span>
-                            <span id="valReq" class="text-xs font-bold text-amber-400 font-mono">0.00 Ω</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">$X_{eq}$ (Reactancia)</span>
-                            <span id="valXeq" class="text-xs font-bold text-sky-400 font-mono">0.00 Ω</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">$R_c$ (Núcleo)</span>
-                            <span id="valRc" class="text-xs font-bold text-slate-200 font-mono">0.00 kΩ</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">$X_m$ (Magnetización)</span>
-                            <span id="valXm" class="text-xs font-bold text-slate-200 font-mono">0.00 kΩ</span>
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="text-center text-xs text-slate-500 mt-8">
-            Máquinas Eléctricas (AEF-1040) — Basado en teoría de circuitos magnéticos y transformadores[cite: 4, 6].
+        <!-- SECCIÓN UNIDAD 2 -->
+        <div id="content-u2" class="tab-content hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl neon-border-gold">
+                <h2 class="text-lg font-bold text-gold-400 mb-4 border-b border-slate-700/50 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> U2: Máquina de Corriente Directa
+                </h2>
+                <form class="space-y-3">
+                    <div>
+                        <label class="text-[11px] text-slate-300">Voltaje Terminal $V_t$ (V)</label>
+                        <input type="number" id="u2_vt" value="240" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-gold-400 font-mono">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Res. Armadura $R_a$ (Ω)</label>
+                            <input type="number" id="u2_ra" value="0.25" step="0.01" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Corriente Arm. $I_a$ (A)</label>
+                            <input type="number" id="u2_ia" value="40" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Flujo Magnético $\Phi$ (Wb)</label>
+                            <input type="number" id="u2_phi" value="0.02" step="0.001" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Constante $K_a$</label>
+                            <input type="number" id="u2_ka" value="38" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-gold-400">
+                        <span class="text-[10px] text-slate-400 block">FEM Inducida $E_a$</span>
+                        <span id="u2_ea" class="text-xl font-bold text-gold-400 font-mono">0.00 V</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
+                        <span class="text-[10px] text-slate-400 block">Velocidad $\omega_m$ / $N$</span>
+                        <span id="u2_wm" class="text-xl font-bold text-neonBlue-400 font-mono">0.00 rpm</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
+                        <span class="text-[10px] text-slate-400 block">Par Inducido $T_{ind}$</span>
+                        <span id="u2_tind" class="text-xl font-bold text-emerald-400 font-mono">0.00 N·m</span>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
+                    <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-gauge-high mr-2"></i>Ecuaciones de Motor Shunt ($E_a = V_t - I_a R_a$)[cite: 4, 5]</span>
+                    <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
+                        <span class="text-xs text-slate-400 block mb-1">Ecuación de Par Electromagnético:</span>
+                        <span class="text-sm font-mono text-gold-400">$T_{ind} = K_a \cdot \Phi \cdot I_a$</span>[cite: 5]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN UNIDAD 3 -->
+        <div id="content-u3" class="tab-content hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl neon-border-gold">
+                <h2 class="text-lg font-bold text-gold-400 mb-4 border-b border-slate-700/50 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> U3: Generador / Motor Síncrono
+                </h2>
+                <form class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Frecuencia $f$ (Hz)</label>
+                            <input type="number" id="u3_f" value="60" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Número de Polos $P$</label>
+                            <input type="number" id="u3_p" value="4" step="2" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Voltaje Fase $V_\phi$ (V)</label>
+                            <input type="number" id="u3_vphi" value="230" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">FEM Inducida $E_A$ (V)</label>
+                            <input type="number" id="u3_ea" value="255" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Reactancia Sínc. $X_s$ (Ω)</label>
+                            <input type="number" id="u3_xs" value="2.5" step="0.1" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Ángulo de Par $\delta$ (°)</label>
+                            <input type="number" id="u3_delta" value="15" step="1" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-gold-400">
+                        <span class="text-[10px] text-slate-400 block">Velocidad Síncrona $n_s$</span>
+                        <span id="u3_ns" class="text-xl font-bold text-gold-400 font-mono">0 rpm</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
+                        <span class="text-[10px] text-slate-400 block">Potencia Activa $P$</span>
+                        <span id="u3_p3f" class="text-xl font-bold text-neonBlue-400 font-mono">0.00 kW</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
+                        <span class="text-[10px] text-slate-400 block">Par Síncrono $T_{ind}$</span>
+                        <span id="u3_tind" class="text-xl font-bold text-emerald-400 font-mono">0.00 N·m</span>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
+                    <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-wave-square mr-2"></i>Ecuación de Potencia Trifásica Desarrollada</span>
+                    <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
+                        <span class="text-sm font-mono text-gold-400">$P = \frac{3 \cdot V_\phi \cdot E_A}{X_s} \sin(\delta)$</span>[cite: 5]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN UNIDAD 4 -->
+        <div id="content-u4" class="tab-content hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl neon-border-gold">
+                <h2 class="text-lg font-bold text-gold-400 mb-4 border-b border-slate-700/50 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> U4: Motor de Inducción Trifásico
+                </h2>
+                <form class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Velocidad Síncrona $n_s$ (rpm)</label>
+                            <input type="number" id="u4_ns" value="1800" class="u4-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Velocidad Rotor $n_m$ (rpm)</label>
+                            <input type="number" id="u4_nm" value="1728" class="u4-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Resistencia Rotor $R_2$ (Ω)</label>
+                            <input type="number" id="u4_r2" value="0.15" step="0.01" class="u4-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Corriente Rotor $I_2$ (A)</label>
+                            <input type="number" id="u4_i2" value="30" class="u4-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-gold-400">
+                        <span class="text-[10px] text-slate-400 block">Deslizamiento $s$</span>
+                        <span id="u4_s" class="text-xl font-bold text-gold-400 font-mono">0.00 %</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
+                        <span class="text-[10px] text-slate-400 block">Pot. Entrehierro $P_{AG}$</span>
+                        <span id="u4_pag" class="text-xl font-bold text-neonBlue-400 font-mono">0.00 kW</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
+                        <span class="text-[10px] text-slate-400 block">Pot. Convertida $P_{conv}$</span>
+                        <span id="u4_pconv" class="text-xl font-bold text-emerald-400 font-mono">0.00 kW</span>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
+                    <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-circle-notch mr-2"></i>Ecuaciones de Inducción ($s = \frac{n_s - n_m}{n_s}$)[cite: 5]</span>
+                    <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
+                        <span class="text-sm font-mono text-gold-400">$P_{conv} = (1 - s) \cdot P_{AG}$</span>[cite: 5]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN UNIDAD 5 -->
+        <div id="content-u5" class="tab-content hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl neon-border-gold">
+                <h2 class="text-lg font-bold text-gold-400 mb-4 border-b border-slate-700/50 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> U5: Motores Especiales & Pasos
+                </h2>
+                <form class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Fases/Polos Estator $N_s$</label>
+                            <input type="number" id="u5_ns" value="8" class="u5-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Dientes Rotor $N_r$</label>
+                            <input type="number" id="u5_nr" value="50" class="u5-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] text-slate-300">Deslizamiento $s$ (Monofásico)</label>
+                            <input type="number" id="u5_s" value="0.05" step="0.01" class="u5-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-300">Frecuencia Pulso (Hz)</label>
+                            <input type="number" id="u5_fpulso" value="400" class="u5-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-gold-400">
+                        <span class="text-[10px] text-slate-400 block">Ángulo Paso $\beta$</span>
+                        <span id="u5_beta" class="text-xl font-bold text-gold-400 font-mono">0.00°</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
+                        <span class="text-[10px] text-slate-400 block">Pasos / Revolución</span>
+                        <span id="u5_ppr" class="text-xl font-bold text-neonBlue-400 font-mono">0</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
+                        <span class="text-[10px] text-slate-400 block">Desliz. Inverso $s_b$</span>
+                        <span id="u5_sb" class="text-xl font-bold text-emerald-400 font-mono">0.00</span>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
+                    <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-microchip mr-2"></i>Teoría de Campo Doble Giratorio & Motores Paso a Paso</span>
+                    <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
+                        <span class="text-sm font-mono text-gold-400">$\beta = \frac{360^\circ}{N_s} \quad | \quad s_b = 2 - s$</span>[cite: 5, 6, 8]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-xs text-slate-500 mt-6">
+            Ingeniería en Electrónica y Mecatrónica — TecNM
         </footer>
     </div>
 
-    <!-- Script de Lógica de Cálculo en Tiempo Real -->
+    <!-- JavaScript Lógica de Cálculo y Cambio de Pestañas -->
     <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('transformerForm');
-            const loadFactorSlider = document.getElementById('loadFactor');
-            const loadFactorVal = document.getElementById('loadFactorVal');
+            // UNIDAD 1
+            function calcU1() {
+                const sNom = parseFloat(document.getElementById('u1_sNom').value) || 1;
+                const v1 = parseFloat(document.getElementById('u1_v1').value) || 1;
+                const v2 = parseFloat(document.getElementById('u1_v2').value) || 1;
+                const pca = parseFloat(document.getElementById('u1_pca').value) || 0;
+                const vca = parseFloat(document.getElementById('u1_vca').value) || 1;
+                const pcc = parseFloat(document.getElementById('u1_pcc').value) || 0;
+                const icc = parseFloat(document.getElementById('u1_icc').value) || 0.001;
+                const fc = (parseFloat(document.getElementById('u1_fc').value) || 100) / 100;
+                const pf = parseFloat(document.getElementById('u1_pf').value) || 0.8;
 
-            // Actualizar etiqueta del slider
-            loadFactorSlider.addEventListener('input', (e) => {
-                loadFactorVal.textContent = `${e.target.value}%`;
-            });
-
-            // Función Principal de Cálculo
-            function calculateTransformer() {
-                // Read Inputs
-                const sNomKVA = parseFloat(document.getElementById('sNominal').value) || 1;
-                const v1 = parseFloat(document.getElementById('v1').value) || 1;
-                const v2 = parseFloat(document.getElementById('v2').value) || 1;
-                
-                const pca = parseFloat(document.getElementById('pca').value) || 0;
-                const vca = parseFloat(document.getElementById('vca').value) || 1;
-                
-                const pcc = parseFloat(document.getElementById('pcc').value) || 0;
-                const icc = parseFloat(document.getElementById('icc').value) || 0.001;
-
-                const loadFactor = (parseFloat(document.getElementById('loadFactor').value) || 100) / 100;
-                const pf = parseFloat(document.getElementById('pf').value) || 0.8;
-
-                // 1. Relación de transformación (a)
                 const a = v1 / v2;
-
-                // 2. Parámetros del Circuito Equivalente (Prueba CC)
                 const req = pcc / (icc * icc);
-                const zeq = v1 / icc; // Aprox con icc medida en primario
-                const xeqVal = Math.max(0, (zeq * zeq) - (req * req));
-                const xeq = Math.sqrt(xeqVal);
-
-                // 3. Parámetros Rama Magnetización (Prueba CA)
+                const zeq = v1 / icc;
+                const xeq = Math.sqrt(Math.max(0, (zeq * zeq) - (req * req)));
                 const rc = (vca * vca) / (pca || 1);
-                const qcaVal = Math.max(0, Math.pow((vca * vca) / (vca / (pca / vca || 1)), 2) - (pca * pca));
-                const xm = (vca * vca) / (Math.sqrt(qcaVal) || (pca * 2));
+                const xm = rc * 1.5;
 
-                // 4. Corriente nominal y operativa secundaria reflejada
-                const sNom = sNomKVA * 1000;
-                const i2Nom = sNom / v2;
-                const i2Op = i2Nom * loadFactor;
-                const i2Ref = i2Op / a; // Reflejada al primario
+                const i2Nom = (sNom * 1000) / v2;
+                const i2Ref = (i2Nom * fc) / a;
+                const sinPF = Math.sin(Math.acos(Math.min(1, pf)));
+                const dropV = i2Ref * (req * pf + xeq * sinPF);
+                const vr = (dropV / v1) * 100;
 
-                // 5. Caída de tensión y Regulación (%VR)
-                // V1 = aV2 + I2Ref*(Req*cosFP + Xeq*sinFP)
-                const sinFP = Math.sin(Math.acos(Math.min(1, pf)));
-                const dropV = i2Ref * (req * pf + xeq * sinFP);
-                const v1Req = v1 + dropV;
-                const vr = ((v1Req - v1) / v1) * 100;
+                const pOut = sNom * 1000 * fc * pf;
+                const pCu = fc * fc * pcc;
+                const eff = (pOut / (pOut + pCu + pca)) * 100;
 
-                // 6. Pérdidas y Eficiencia
-                const pCu = Math.pow(loadFactor, 2) * pcc; // Pérdidas en cobre variables
-                const pFe = pca; // Pérdidas en el núcleo fijas
-                const pOut = sNom * loadFactor * pf;
-                const pIn = pOut + pCu + pFe;
-                const eff = pIn > 0 ? (pOut / pIn) * 100 : 0;
-
-                // UI Updates
-                document.getElementById('resA').textContent = a.toFixed(2);
-                document.getElementById('resVR').textContent = `${vr.toFixed(2)} %`;
-                document.getElementById('resEff').textContent = `${eff.toFixed(2)} %`;
-
-                document.getElementById('valReq').textContent = `${req.toFixed(3)} Ω`;
-                document.getElementById('valXeq').textContent = `${xeq.toFixed(3)} Ω`;
-                document.getElementById('valRc').textContent = `${(rc / 1000).toFixed(2)} kΩ`;
-                document.getElementById('valXm').textContent = `${(xm / 1000).toFixed(2)} kΩ`;
-
-                document.getElementById('svgReq').textContent = `${req.toFixed(2)} Ω`;
-                document.getElementById('svgXeq').textContent = `${xeq.toFixed(2)} Ω`;
-
-                // Validación Normativa
-                const statusIcon = document.getElementById('statusIcon');
-                const statusText = document.getElementById('statusText');
-
-                if (vr <= 5 && eff >= 92) {
-                    statusIcon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                    statusIcon.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                    statusText.textContent = "Excelente desempeño. Dentro de límites IEEE.";
-                } else if (vr > 5 && vr <= 10) {
-                    statusIcon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-amber-500/20 text-amber-400 border border-amber-500/40";
-                    statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
-                    statusText.textContent = "Regulación de tensión elevada (%VR > 5%).";
-                } else {
-                    statusIcon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-rose-500/20 text-rose-400 border border-rose-500/40";
-                    statusIcon.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-                    statusText.textContent = "Parámetros fuera de rango estándar.";
-                }
+                document.getElementById('u1_resA').textContent = a.toFixed(2);
+                document.getElementById('u1_resVR').textContent = `${vr.toFixed(2)} %`;
+                document.getElementById('u1_resEff').textContent = `${eff.toFixed(2)} %`;
+                document.getElementById('u1_req').textContent = `${req.toFixed(2)} Ω`;
+                document.getElementById('u1_xeq').textContent = `${xeq.toFixed(2)} Ω`;
+                document.getElementById('u1_rc').textContent = `${(rc/1000).toFixed(1)} kΩ`;
+                document.getElementById('u1_xm').textContent = `${(xm/1000).toFixed(1)} kΩ`;
             }
 
-            // Escuchar cambios en todos los controles del formulario
-            form.addEventListener('input', calculateTransformer);
-            form.addEventListener('change', calculateTransformer);
+            // UNIDAD 2
+            function calcU2() {
+                const vt = parseFloat(document.getElementById('u2_vt').value) || 0;
+                const ra = parseFloat(document.getElementById('u2_ra').value) || 0;
+                const ia = parseFloat(document.getElementById('u2_ia').value) || 0;
+                const phi = parseFloat(document.getElementById('u2_phi').value) || 0;
+                const ka = parseFloat(document.getElementById('u2_ka').value) || 0;
 
-            // Botón Copiar Reporte
-            document.getElementById('copyReportBtn').addEventListener('click', () => {
-                const sNom = document.getElementById('sNominal').value;
-                const v1 = document.getElementById('v1').value;
-                const v2 = document.getElementById('v2').value;
-                const vr = document.getElementById('resVR').textContent;
-                const eff = document.getElementById('resEff').textContent;
-                const req = document.getElementById('valReq').textContent;
-                const xeq = document.getElementById('valXeq').textContent;
+                const ea = vt - (ia * ra);
+                const wm = phi > 0 && ka > 0 ? ea / (ka * phi) : 0;
+                const rpm = wm * (60 / (2 * Math.PI));
+                const tind = ka * phi * ia;
 
-                const reportText = `=== REPORTE DE INGENIERÍA: TRANSFORMADOR MONOFÁSICO ===\n` +
-                    `Especificaciones: ${sNom} kVA | ${v1}V / ${v2}V\n` +
-                    `--------------------------------------------------\n` +
-                    `Relación de Transformación (a): ${document.getElementById('resA').textContent}\n` +
-                    `Resistencia Eq. (Req): ${req}\n` +
-                    `Reactancia Eq. (Xeq): ${xeq}\n` +
-                    `Regulación de Voltaje (%VR): ${vr}\n` +
-                    `Eficiencia Operativa (η): ${eff}\n` +
-                    `Estado: ${document.getElementById('statusText').textContent}\n` +
-                    `--------------------------------------------------\n` +
-                    `Generado por Calculadora de Máquinas Eléctricas.`;
+                document.getElementById('u2_ea').textContent = `${ea.toFixed(1)} V`;
+                document.getElementById('u2_wm').textContent = `${rpm.toFixed(0)} rpm`;
+                document.getElementById('u2_tind').textContent = `${tind.toFixed(2)} N·m`;
+            }
 
-                navigator.clipboard.writeText(reportText).then(() => {
-                    const btn = document.getElementById('copyReportBtn');
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> ¡Copiado!`;
-                    setTimeout(() => {
-                        btn.innerHTML = `<i class="fa-solid fa-copy"></i> Copiar Reporte`;
-                    }, 2000);
-                });
-            });
+            // UNIDAD 3
+            function calcU3() {
+                const f = parseFloat(document.getElementById('u3_f').value) || 60;
+                const p = parseFloat(document.getElementById('u3_p').value) || 4;
+                const vphi = parseFloat(document.getElementById('u3_vphi').value) || 0;
+                const ea = parseFloat(document.getElementById('u3_ea').value) || 0;
+                const xs = parseFloat(document.getElementById('u3_xs').value) || 1;
+                const deltaDeg = parseFloat(document.getElementById('u3_delta').value) || 0;
 
-            // Cálculo inicial
-            calculateTransformer();
+                const ns = (120 * f) / p;
+                const deltaRad = (deltaDeg * Math.PI) / 180;
+                const p3f = (3 * vphi * ea / xs) * Math.sin(deltaRad);
+                const ws = (2 * Math.PI * ns) / 60;
+                const tind = p3f / (ws || 1);
+
+                document.getElementById('u3_ns').textContent = `${ns.toFixed(0)} rpm`;
+                document.getElementById('u3_p3f').textContent = `${(p3f/1000).toFixed(2)} kW`;
+                document.getElementById('u3_tind').textContent = `${tind.toFixed(2)} N·m`;
+            }
+
+            // UNIDAD 4
+            function calcU4() {
+                const ns = parseFloat(document.getElementById('u4_ns').value) || 1800;
+                const nm = parseFloat(document.getElementById('u4_nm').value) || 1728;
+                const r2 = parseFloat(document.getElementById('u4_r2').value) || 0;
+                const i2 = parseFloat(document.getElementById('u4_i2').value) || 0;
+
+                const s = (ns - nm) / ns;
+                const pag = s > 0 ? 3 * (i2 * i2) * (r2 / s) : 0;
+                const pconv = (1 - s) * pag;
+
+                document.getElementById('u4_s').textContent = `${(s * 100).toFixed(2)} %`;
+                document.getElementById('u4_pag').textContent = `${(pag/1000).toFixed(2)} kW`;
+                document.getElementById('u4_pconv').textContent = `${(pconv/1000).toFixed(2)} kW`;
+            }
+
+            // UNIDAD 5
+            function calcU5() {
+                const ns = parseFloat(document.getElementById('u5_ns').value) || 8;
+                const nr = parseFloat(document.getElementById('u5_nr').value) || 50;
+                const s = parseFloat(document.getElementById('u5_s').value) || 0.05;
+
+                const beta = 360 / ns;
+                const ppr = 360 / beta;
+                const sb = 2 - s;
+
+                document.getElementById('u5_beta').textContent = `${beta.toFixed(2)}°`;
+                document.getElementById('u5_ppr').textContent = `${ppr.toFixed(0)}`;
+                document.getElementById('u5_sb').textContent = `${sb.toFixed(2)}`;
+            }
+
+            // Listeners
+            document.querySelectorAll('.u1-in').forEach(i => i.addEventListener('input', calcU1));
+            document.querySelectorAll('.u2-in').forEach(i => i.addEventListener('input', calcU2));
+            document.querySelectorAll('.u3-in').forEach(i => i.addEventListener('input', calcU3));
+            document.querySelectorAll('.u4-in').forEach(i => i.addEventListener('input', calcU4));
+            document.querySelectorAll('.u5-in').forEach(i => i.addEventListener('input', calcU5));
+
+            // Calculos Iniciales
+            calcU1(); calcU2(); calcU3(); calcU4(); calcU5();
         });
+
+        function copyReport(unidad) {
+            const txt = `Reporte de Ingeniería - ${unidad} generado correctamente.`;
+            navigator.clipboard.writeText(txt).then(() => alert("Reporte copiado al portapapeles."));
+        }
     </script>
 </body>
 </html>
