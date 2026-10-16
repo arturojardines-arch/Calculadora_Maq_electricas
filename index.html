@@ -21,6 +21,19 @@
     </script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Configuración e inclusión de MathJax para renderizar LaTeX correctamente -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         body {
             background: radial-gradient(circle at top left, #0f172a, #020617);
@@ -74,7 +87,7 @@
         <!-- Navegación por Pestañas (Unidades 1 a 5) -->
         <div class="flex flex-wrap gap-2 mb-6 justify-center" id="tabContainer">
             <button onclick="switchTab('u1')" id="tab-u1" class="tab-btn active glass-card px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2">
-                <i class="fa-solid fa-transformer-bolt"></i> U1: Transformadores
+                <i class="fa-solid fa-bolt"></i> U1: Transformadores
             </button>
             <button onclick="switchTab('u2')" id="tab-u2" class="tab-btn glass-card px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs font-bold transition-all flex items-center gap-2">
                 <i class="fa-solid fa-car-battery"></i> U2: Máquinas CD
@@ -143,7 +156,7 @@
                         <span id="u1_resA" class="text-xl font-bold text-gold-400 font-mono">0.00</span>
                     </div>
                     <div class="glass-panel p-4 rounded-xl border-l-4 border-l-neonBlue-400">
-                        <span class="text-[10px] text-slate-400 block">Regulación %VR</span>
+                        <span class="text-[10px] text-slate-400 block">Regulación $\%VR$</span>
                         <span id="u1_resVR" class="text-xl font-bold text-neonBlue-400 font-mono">0.00 %</span>
                     </div>
                     <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
@@ -183,7 +196,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[11px] text-slate-300">Res. Armadura $R_a$ (Ω)</label>
+                            <label class="text-[11px] text-slate-300">Res. Armadura $R_a$ ($\Omega$)</label>
                             <input type="number" id="u2_ra" value="0.25" step="0.01" class="u2-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
                         </div>
                         <div>
@@ -222,7 +235,7 @@
                     <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-gauge-high mr-2"></i>Ecuaciones de Motor Shunt ($E_a = V_t - I_a R_a$)[cite: 4, 5]</span>
                     <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
                         <span class="text-xs text-slate-400 block mb-1">Ecuación de Par Electromagnético:</span>
-                        <span class="text-sm font-mono text-gold-400">$T_{ind} = K_a \cdot \Phi \cdot I_a$</span>[cite: 5]
+                        <span class="text-sm font-mono text-gold-400">$$T_{ind} = K_a \cdot \Phi \cdot I_a$$</span>[cite: 5]
                     </div>
                 </div>
             </div>
@@ -257,7 +270,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[11px] text-slate-300">Reactancia Sínc. $X_s$ (Ω)</label>
+                            <label class="text-[11px] text-slate-300">Reactancia Sínc. $X_s$ ($\Omega$)</label>
                             <input type="number" id="u3_xs" value="2.5" step="0.1" class="u3-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
                         </div>
                         <div>
@@ -285,7 +298,7 @@
                 <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
                     <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-wave-square mr-2"></i>Ecuación de Potencia Trifásica Desarrollada</span>
                     <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
-                        <span class="text-sm font-mono text-gold-400">$P = \frac{3 \cdot V_\phi \cdot E_A}{X_s} \sin(\delta)$</span>[cite: 5]
+                        <span class="text-sm font-mono text-gold-400">$$P = \frac{3 \cdot V_\phi \cdot E_A}{X_s} \sin(\delta)$$</span>[cite: 5]
                     </div>
                 </div>
             </div>
@@ -310,7 +323,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[11px] text-slate-300">Resistencia Rotor $R_2$ (Ω)</label>
+                            <label class="text-[11px] text-slate-300">Resistencia Rotor $R_2$ ($\Omega$)</label>
                             <input type="number" id="u4_r2" value="0.15" step="0.01" class="u4-in w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs font-mono">
                         </div>
                         <div>
@@ -338,7 +351,7 @@
                 <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
                     <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-circle-notch mr-2"></i>Ecuaciones de Inducción ($s = \frac{n_s - n_m}{n_s}$)[cite: 5]</span>
                     <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
-                        <span class="text-sm font-mono text-gold-400">$P_{conv} = (1 - s) \cdot P_{AG}$</span>[cite: 5]
+                        <span class="text-sm font-mono text-gold-400">$$P_{conv} = (1 - s) \cdot P_{AG}$$</span>[cite: 5]
                     </div>
                 </div>
             </div>
@@ -391,7 +404,7 @@
                 <div class="glass-panel p-4 rounded-2xl neon-border-blue flex-1 flex flex-col justify-between">
                     <span class="text-xs font-bold text-neonBlue-400"><i class="fa-solid fa-microchip mr-2"></i>Teoría de Campo Doble Giratorio & Motores Paso a Paso</span>
                     <div class="p-4 bg-slate-950/80 rounded-xl my-2 text-center">
-                        <span class="text-sm font-mono text-gold-400">$\beta = \frac{360^\circ}{N_s} \quad | \quad s_b = 2 - s$</span>[cite: 5, 6, 8]
+                        <span class="text-sm font-mono text-gold-400">$$\beta = \frac{360^\circ}{N_s} \quad | \quad s_b = 2 - s$$</span>[cite: 5, 6, 8]
                     </div>
                 </div>
             </div>
@@ -402,14 +415,23 @@
         </footer>
     </div>
 
-    <!-- JavaScript Lógica de Cálculo y Cambio de Pestañas -->
+    <!-- JavaScript Lógica de Cálculo y Renderizado de MathJax -->
     <script>
+        function triggerMathJax() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             
             document.getElementById(`content-${tabId}`).classList.remove('hidden');
             document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            // Re-renderizar expresiones matemáticas al cambiar de pestaña
+            triggerMathJax();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -527,8 +549,11 @@
             document.querySelectorAll('.u4-in').forEach(i => i.addEventListener('input', calcU4));
             document.querySelectorAll('.u5-in').forEach(i => i.addEventListener('input', calcU5));
 
-            // Calculos Iniciales
+            // Cálculos Iniciales
             calcU1(); calcU2(); calcU3(); calcU4(); calcU5();
+            
+            // Primer renderizado de fórmulas LaTeX
+            setTimeout(triggerMathJax, 500);
         });
 
         function copyReport(unidad) {
